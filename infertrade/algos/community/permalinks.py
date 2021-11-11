@@ -374,4 +374,19 @@ data_dictionary = {
             "/algos/community/allocations.py#L738"
         },
     },
+    "MACDADX_strategy": {
+        "function": "Not applicable.",
+        "parameters": {
+            "window_slow": 26,
+            "window_fast": 12,
+            "window_signal": 9,
+            "window_adx": 14,
+            "max_investment": 0.1,
+        },
+        "series": ["close"],
+        "available_representation_types": {
+            "github_permalink": "https://github.com/ta-oliver/infertrade/blob/5aa01970fc4277774bd14f0823043b4657e3a57f/infertrade"
+            "/algos/community/signals.py#L321"
+        },  # TODO - permalink needs to be updated.
+    },
 }

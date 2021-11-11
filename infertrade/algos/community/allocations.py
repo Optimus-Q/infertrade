@@ -26,7 +26,6 @@ import inspect
 import os
 from typing import List, Callable, Dict
 
-
 # InferStat packages
 from infertrade.PandasEnum import PandasEnum
 import infertrade.utilities.operations as operations
@@ -257,7 +256,8 @@ def constant_allocation_size(dataframe: pd.DataFrame, fixed_allocation_size: flo
 
 def difference_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
     """
-    Calculates a difference relationship, which compares the asset's future price change to the last difference between the signal series and asset price.
+    Calculates a difference relationship, which compares the asset's future price change to the last difference
+    between the signal series and asset price.
 
     Notes:
     - Does not fill NaNs in input, so full data needs to be supplied.
@@ -278,7 +278,8 @@ def difference_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
 
 def difference_relationship_oos(dataframe: pd.DataFrame) -> pd.DataFrame:
     """
-    Calculates a difference relationship, which compares the asset's future price change to the last difference between the signal series and asset price.
+    Calculates a difference relationship, which compares the asset's future price change to the last difference
+    between the signal series and asset price.
 
     Notes:
     - Does not fill NaNs in input, so full data needs to be supplied.
@@ -348,7 +349,8 @@ def high_low_difference(dataframe: pd.DataFrame, scale: float = 1.0, constant: f
 
 def level_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
     """
-    Calculates a level relationship, which compares the asset's future price change to the last value of the signal series.
+    Calculates a level relationship, which compares the asset's future price change to the last value of the signal
+    series.
 
     Notes:
     - Does not fill NaNs in input, so full data needs to be supplied.
@@ -369,7 +371,8 @@ def level_relationship(dataframe: pd.DataFrame) -> pd.DataFrame:
 
 def level_relationship_oos(dataframe: pd.DataFrame) -> pd.DataFrame:
     """
-    Calculates a level relationship, which compares the asset's future price change to the last value of the signal series.
+    Calculates a level relationship, which compares the asset's future price change to the last value of the signal
+    series.
 
     Notes:
     - Does not fill NaNs in input, so full data needs to be supplied.
@@ -507,7 +510,8 @@ def difference_regression(
     of the research series.
 
     parameters:
-    difference_coefficient: The coefficient for dependence on the log gap between the signal series and the price series.
+    difference_coefficient: The coefficient for dependence on the log gap between the signal series and the price
+    series.
     difference_constant: The coefficient for the constant contribution.
     """
     research = dataframe["research"]
@@ -608,7 +612,6 @@ def SMA_strategy(df: pd.DataFrame, window: int = 1, max_investment: float = 0.1)
 
 
 def WMA_strategy(df: pd.DataFrame, window: int = 1, max_investment: float = 0.1) -> pd.DataFrame:
-
     """
     Weighted moving average strategy which buys when price is above signal and sells when price is below signal
     """
@@ -692,7 +695,6 @@ def EMA_strategy(df: pd.DataFrame, window: int = 50, max_investment: float = 0.1
 def bollinger_band_strategy(
     df: pd.DataFrame, window: int = 20, window_dev: int = 2, max_investment: float = 0.1
 ) -> pd.DataFrame:
-
     """
     This is Strategy that identify overbought or oversold market conditions.
         1. Oversold: Price breaks below the lower band of the Bollinger Bands
@@ -783,7 +785,8 @@ def PVO_strategy(
 
 def TRIX_strategy(df: pd.DataFrame, window: int = 14, max_investment: float = 0.1) -> pd.DataFrame:
     """
-    This is Triple Exponential Average (TRIX) strategy which buys when signal is above zero and sells when signal is below zero
+    This is Triple Exponential Average (TRIX) strategy which buys when signal is above zero and sells when signal is
+    below zero
     """
     trix = signals.triple_exponential_average(df, window)["signal"]
 
@@ -799,7 +802,8 @@ def TSI_strategy(
     df: pd.DataFrame, window_slow: int = 25, window_fast: int = 13, window_signal: int = 13, max_investment: float = 0.1
 ) -> pd.DataFrame:
     """
-    This is True Strength Index (TSI) strategy which buys when TSI is greater than signal and sells when TSI is below signal
+    This is True Strength Index (TSI) strategy which buys when TSI is greater than signal and sells when TSI is below
+    signal
     Signal is EMA of TSI
     """
     df_with_signals = signals.true_strength_index(df, window_slow, window_fast, window_signal)
@@ -941,23 +945,36 @@ def vortex_strategy(df: pd.DataFrame, window: int = 14, max_investment: float = 
     return df
 
 
-def MACDADX_Startegy(df: pd.DataFrame, window_slow: int = 26, window_fast: int = 12, window_signal: int = 9, window_adx: int =14,
-                     max_investment: float = 0.1):
-    ''' This strategy is combination of MACD, +DI and -DI from ADX
+def MACDADX_strategy(
+    df: pd.DataFrame,
+    window_slow: int = 26,
+    window_fast: int = 12,
+    window_signal: int = 9,
+    window_adx: int = 14,
+    max_investment: float = 0.1,
+):
+    """
+    This strategy is combination of MACD, +DI and -DI from ADX.
+
     Rules:
     Bullish: MACD line > 0 and MACD line > Signal line and ADX +DI > ADX -DI
     Bearish: MACD line < 0 and MACD line < signal line and ADX +DI < ADX -DI
-    '''
+    """
     df_with_signals = signals.macd_adx_system(df, window_slow, window_fast, window_signal, window_adx)
-    up = df_with_signals[((df_with_signals["MACD_Line"] > 0) & (df_with_signals["MACD_Line"] > df_with_signals["SIGNAL_Line"])) & (
-            df_with_signals["ADX_POS"] > df_with_signals["ADX_NEG"])]
-    dwn = df_with_signals[((df_with_signals["MACD_Line"]<0)&(df_with_signals["MACD_Line"]<df_with_signals["SIGNAL_Line"]))&(
-        df_with_signals["ADX_POS"]<df_with_signals["ADX_NEG"])]
-    # allocation
+    up = df_with_signals[
+        ((df_with_signals["MACD_Line"] > 0) & (df_with_signals["MACD_Line"] > df_with_signals["SIGNAL_Line"]))
+        & (df_with_signals["ADX_POS"] > df_with_signals["ADX_NEG"])
+    ]
+    dwn = df_with_signals[
+        ((df_with_signals["MACD_Line"] < 0) & (df_with_signals["MACD_Line"] < df_with_signals["SIGNAL_Line"]))
+        & (df_with_signals["ADX_POS"] < df_with_signals["ADX_NEG"])
+    ]
+
+    # We now calculate the fraction of portfolio to invest.
     df_with_signals["allocation"] = 0.0
     df_with_signals.loc[up.index, "allocation"] = max_investment
     df_with_signals.loc[dwn.index, "allocation"] = -max_investment
-    return (df_with_signals)
+    return df_with_signals
 
 
 # Below we populate a function list and a required series list. This needs to be updated when adding new rules.
@@ -1001,7 +1018,7 @@ function_list = [
     ADX_strategy,
     vortex_strategy,
     DPO_strategy,
-    MACDADX_Startegy,
+    MACDADX_strategy,
 ]
 
 required_series_dict = {
@@ -1043,7 +1060,7 @@ required_series_dict = {
     "ADX_strategy": ["close", "high", "low"],
     "vortex_strategy": ["close", "high", "low"],
     "DPO_strategy": ["close"],
-    "MACDADX_Startegy": ["close", "high", "low"],
+    "MACDADX_strategy": ["close", "high", "low"],
 }
 
 
@@ -1108,7 +1125,6 @@ def create_infertrade_export_allocations():
     list_of_functions = get_functions_list()
     series_dict = get_required_series()
     for function in list_of_functions:
-
         infertrade_export_allocations_raw.update(
             {
                 function.__name__: {
@@ -1150,7 +1166,6 @@ def algorithm_dictionary_with_functions():
 
 
 infertrade_export_allocations = algorithm_dictionary_with_functions()
-
 
 if __name__ == "__main__":
     """To quickly view rule properties."""
